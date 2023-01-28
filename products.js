@@ -1,11 +1,8 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+import pagination from './pagination.js'
 
 const url = 'https://vue3-course-api.hexschool.io/v2/';
 const path = 'han113';
-
-// const username = document.querySelector('#floatingInput').value;
-// const password = document.querySelector('#floatingPassword').value;
-// const signinBtn = document.querySelector('#signin');
 
 let productModal = {};
 let delProductModal = {};
@@ -17,7 +14,8 @@ const app = {
             tempProduct : {
                 imagesUrl:[],
             },
-            isNew : false,
+            isNew : false, // 確認是編輯或是新增
+            page : {},
         }
     },
     methods : {
@@ -32,9 +30,11 @@ const app = {
                 window.location = 'login.html';
             })
         },
-        getProductList() {
-            axios.get(`${url}api/${path}/admin/products/all`).then((res) => {
+        
+        getProductList(page = 1) {
+            axios.get(`${url}api/${path}/admin/products/?page=${page}`).then((res) => {
                 this.products = res.data.products;
+                this.page = res.data.pagination;
                 // console.log(res);
             }).catch((err) => {
                 console.log(err);
@@ -87,6 +87,9 @@ const app = {
             })
         },
     },
+    components : {
+        pagination
+    },
     mounted() {
         const token = document.cookie.replace(/(?:(?:^|.*;\s*)vue-Class\s*=\s*([^;]*).*$)|^.*$/, '$1');
     axios.defaults.headers.common.Authorization = token;
@@ -96,6 +99,12 @@ const app = {
     }
 
 }
-
 createApp(app)
     .mount('#app');
+
+app.component('product-modal',{
+    props:['tempProduct','updateProduct'],
+    template : '#product-modal-template',
+})
+
+
