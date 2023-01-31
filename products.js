@@ -7,7 +7,7 @@ const path = 'han113';
 let productModal = {};
 let delProductModal = {};
 
-const app = {
+const app =  createApp({
     data() {
         return {
             products : [],
@@ -98,13 +98,14 @@ const app = {
         delProductModal = new bootstrap.Modal('#delProductModal');
     }
 
-}
-createApp(app)
-    .mount('#app');
+});
+
 
 app.component('product-modal',{
     props:['tempProduct','updateProduct'],
     template : '#product-modal-template',
 })
+
+app.mount('#app');
 
 
